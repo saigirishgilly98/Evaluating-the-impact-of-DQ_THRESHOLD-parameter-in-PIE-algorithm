@@ -1,9 +1,9 @@
 Week 1
       - Day 1 : Created Github repository and Wiki.
-      - Day 2-5 : Read - RFC 8033 (Link: https://tools.ietf.org/html/rfc8033)
+      - Day 2-5 : Read - RFC 8033 (Link: [(https://tools.ietf.org/html/rfc8033)])
                   Met Mohit Sir and clarified about the requirements of the assignment
                   Found values of dq_threshold set in Linux Kernel, ns-3,paper (PIE: A lightweight control scheme to address the bufferbloat problem) and RFC.
-                  Linux: 16384 bytes (Link - https://github.com/torvalds/linux/blob/master/include/net/pie.h)
-                  Ns3: 10000 bytes (Link - http://code.nsnam.org/ns-3-dev/rev/2185118dab3b)
-                  Paper: 10000 bytes (Link - https://ieeexplore.ieee.org/abstract/document/6602305)
-                  RFC: 16384 bytes (Link - https://tools.ietf.org/html/rfc8033)
+                  Linux: 16384 bytes (Link - [(https://github.com/torvalds/linux/blob/master/include/net/pie.h)])
+                  Ns3: 10000 bytes (Link - [(http://code.nsnam.org/ns-3-dev/rev/2185118dab3b)])
+                  Paper: 10000 bytes (Link - [(https://ieeexplore.ieee.org/abstract/document/6602305)])
+                  RFC: 16384 bytes (Link - [(https://tools.ietf.org/html/rfc8033)])
