@@ -8,3 +8,11 @@ Week 1
                               Ns3: 10000 bytes (Link - http://code.nsnam.org/ns-3-dev/rev/2185118dab3b)
                               Paper: 10000 bytes (Link - https://ieeexplore.ieee.org/abstract/document/6602305)
                               RFC: 16384 bytes (Link - https://tools.ietf.org/html/rfc8033)
+
+----------
+
+        - Revised RFC 8033.
+        - Read about flent.
+        - Built a network topology consisting of server, client and router.
+        - Ran PIE in router and collected data at client side using flent.
+        - Faced issues finding the way to alter dq_threshold parameter value, was only able to alter tupdate and target parameters.
