@@ -1,0 +1,153 @@
+Command: /bin/ping -n -D -i 0.20 -w 70    172.16.10.2
+Return code: 1
+Stdout: PING 172.16.10.2 (172.16.10.2) 56(84) bytes of data.
+
+--- 172.16.10.2 ping statistics ---
+343 packets transmitted, 0 received, 100% packet loss, time 69849ms
+
+
+Stderr: 
+WARNING: Command produced no valid data.
+Runner class: PingRunner
+Command: /bin/ping -n -D -i 0.20 -w 70    172.16.10.2
+Return code: 1
+Stdout: PING 172.16.10.2 (172.16.10.2) 56(84) bytes of data.
+
+--- 172.16.10.2 ping statistics ---
+343 packets transmitted, 0 received, 100% packet loss, time 69849ms
+
+
+Stderr: 
+^C
+(base) sai-girish@saigirish-Inspiron-5559:~$ sudo ip netns exec green flent rrul -p totals --test-parameter bandwidth=800M --test-parameter upload_stream=num_cpus --test-parameter download_streams=num_cpus --test-parameter qdisc_stats_hosts=pg@192.168.20.2 --test-parameter qdisc_stats_interfaces=enx000000001220 -l 60 -H 172.16.10.2 -t pie60_t20_tu_1_without_traffic -o _pie60_t20_tu1_without_traffic.png
+[sudo] password for sai-girish: 
+Started Flent 1.2.2 using Python 3.6.9.
+Starting rrul test. Expected run time: 70 seconds.
+WARNING: Program exited non-zero.
+Runner class: TcRunner
+Command: /bin/bash /usr/share/flent/flent/scripts/tc_iterate.sh -i enx000000001220 -I 0.20 -c 350 -H pg@192.168.20.2
+Return code: 255
+Stdout: 
+Stderr: ssh: connect to host 192.168.20.2 port 22: Connection refused
+
+WARNING: Command produced no valid data.
+Runner class: TcRunner
+Command: /bin/bash /usr/share/flent/flent/scripts/tc_iterate.sh -i enx000000001220 -I 0.20 -c 350 -H pg@192.168.20.2
+Return code: 255
+Stdout: 
+Stderr: ssh: connect to host 192.168.20.2 port 22: Connection refused
+
+Data file written to ./rrul-2020-05-19T152622.686931.pie60_t20_tu_1_without_traffic.flent.gz.
+Initialised matplotlib v2.1.1 on numpy v1.18.1.
+(base) sai-girish@saigirish-Inspiron-5559:~$ sudo ip netns exec router tc qdisc add dev enx000000001220 root pie target 20ms tupdate value=1
+Illegal "tupdate"
+(base) sai-girish@saigirish-Inspiron-5559:~$ sudo ip netns exec router tc qdisc add dev enx000000001220 root pie target 20ms tupdate value=15
+Illegal "tupdate"
+(base) sai-girish@saigirish-Inspiron-5559:~$ sudo ip netns exec router tc qdisc add dev enx000000001220 root pie target 20ms tupdate value=30
+Illegal "tupdate"
+(base) sai-girish@saigirish-Inspiron-5559:~$ sudo ip netns exec router tc qdisc add dev enx000000001220 root pie target 20ms tupdate value=60
+Illegal "tupdate"
+(base) sai-girish@saigirish-Inspiron-5559:~$ sudo ip netns exec router tc qdisc add dev enx000000001220 root pie target 20ms tupdate value 1
+Illegal "tupdate"
+(base) sai-girish@saigirish-Inspiron-5559:~$ sudo ip netns exec router tc qdisc add dev enx000000001220 root pie target 20ms tupdate
+Command line is not complete. Try option "help"
+(base) sai-girish@saigirish-Inspiron-5559:~$ help
+GNU bash, version 4.4.20(1)-release (x86_64-pc-linux-gnu)
+These shell commands are defined internally.  Type `help' to see this list.
+Type `help name' to find out more about the function `name'.
+Use `info bash' to find out more about the shell in general.
+Use `man -k' or `info' to find out more about commands not in this list.
+
+A star (*) next to a name means that the command is disabled.
+
+ job_spec [&]                         history [-c] [-d offset] [n] or h>
+ (( expression ))                     if COMMANDS; then COMMANDS; [ eli>
+ . filename [arguments]               jobs [-lnprs] [jobspec ...] or jo>
+ :                                    kill [-s sigspec | -n signum | -s>
+ [ arg... ]                           let arg [arg ...]
+ [[ expression ]]                     local [option] name[=value] ...
+ alias [-p] [name[=value] ... ]       logout [n]
+ bg [job_spec ...]                    mapfile [-d delim] [-n count] [-O>
+ bind [-lpsvPSVX] [-m keymap] [-f f>  popd [-n] [+N | -N]
+ break [n]                            printf [-v var] format [argument>
+ builtin [shell-builtin [arg ...]]    pushd [-n] [+N | -N | dir]
+ caller [expr]                        pwd [-LP]
+ case WORD in [PATTERN [| PATTERN].>  read [-ers] [-a array] [-d delim]>
+ cd [-L|[-P [-e]] [-@]] [dir]         readarray [-n count] [-O origin] >
+ command [-pVv] command [arg ...]     readonly [-aAf] [name[=value] ...>
+ compgen [-abcdefgjksuv] [-o option>  return [n]
+ complete [-abcdefgjksuv] [-pr] [-D>  select NAME [in WORDS ... ;] do C>
+ compopt [-o|+o option] [-DE] [name>  set [-abefhkmnptuvxBCHP] [-o opti>
+ continue [n]                         shift [n]
+ coproc [NAME] command [redirection>  shopt [-pqsu] [-o] [optname ...]
+ declare [-aAfFgilnrtux] [-p] [name>  source filename [arguments]
+ dirs [-clpv] [+N] [-N]               suspend [-f]
+ disown [-h] [-ar] [jobspec ... | p>  test [expr]
+ echo [-neE] [arg ...]                time [-p] pipeline
+ enable [-a] [-dnps] [-f filename] >  times
+ eval [arg ...]                       trap [-lp] [[arg] signal_spec ..>
+ exec [-cl] [-a name] [command [arg>  true
+ exit [n]                             type [-afptP] name [name ...]
+ export [-fn] [name[=value] ...] or>  typeset [-aAfFgilnrtux] [-p] name>
+ false                                ulimit [-SHabcdefiklmnpqrstuvxPT]>
+ fc [-e ename] [-lnr] [first] [last>  umask [-p] [-S] [mode]
+ fg [job_spec]                        unalias [-a] name [name ...]
+ for NAME [in WORDS ... ] ; do COMM>  unset [-f] [-v] [-n] [name ...]
+ for (( exp1; exp2; exp3 )); do COM>  until COMMANDS; do COMMANDS; done
+ function name { COMMANDS ; } or na>  variables - Names and meanings of>
+ getopts optstring name [arg]         wait [-n] [id ...]
+ hash [-lr] [-p pathname] [-dt] [na>  while COMMANDS; do COMMANDS; done
+ help [-dms] [pattern ...]            { COMMANDS ; }
+(base) sai-girish@saigirish-Inspiron-5559:~$ help qdisc
+bash: help: no help topics match `qdisc'.  Try `help help' or `man -k qdisc' or `info qdisc'.
+(base) sai-girish@saigirish-Inspiron-5559:~$ info qdisc
+info: No menu item 'qdisc' in node '(dir)Top'
+(base) sai-girish@saigirish-Inspiron-5559:~$ man -k qdisc
+tc-cbs (8)           - Credit Based Shaper (CBS) Qdisc
+tc-mqprio (8)        - Multiqueue Priority Qdisc (Offloaded Hardware QOS)
+tc-prio (8)          - Priority qdisc
+(base) sai-girish@saigirish-Inspiron-5559:~$ sudo ip netns exec router tc qdisc add dev enx000000001220 root pie target 20ms
+Cannot find device "enx000000001220"
+(base) sai-girish@saigirish-Inspiron-5559:~$ sudo ip netns exec router tc qdisc add dev eth1 root pie target 20ms tupdate value 1
+Illegal "tupdate"
+(base) sai-girish@saigirish-Inspiron-5559:~$ sudo ip netns exec router tc qdisc add dev eth1 root pie target 20ms tupdate value 1
+Illegal "tupdate"
+(base) sai-girish@saigirish-Inspiron-5559:~$ sudo ip netns exec router tc qdisc add dev eth1 root pie target 20ms
+(base) sai-girish@saigirish-Inspiron-5559:~$ sudo ip netns exec green flent rrul -p totals --test-parameter bandwidth=800M --test-parameter upload_stream=num_cpus --test-parameter download_streams=num_cpus --test-parameter qdisc_stats_hosts=pg@192.168.20.2 --test-parameter qdisc_stats_interfaces=eth1 -l 60 -H 172.16.10.2 -t pie60_t20_tu_1_without_traffic -o _pie60_t20_tu1_without_traffic.png
+Started Flent 1.2.2 using Python 3.6.9.
+Starting rrul test. Expected run time: 70 seconds.
+WARNING: Program exited non-zero.
+Runner class: TcRunner
+Command: /bin/bash /usr/share/flent/flent/scripts/tc_iterate.sh -i eth1 -I 0.20 -c 350 -H pg@192.168.20.2
+Return code: 255
+Stdout: 
+Stderr: ssh: connect to host 192.168.20.2 port 22: Connection refused
+
+WARNING: Command produced no valid data.
+Runner class: TcRunner
+Command: /bin/bash /usr/share/flent/flent/scripts/tc_iterate.sh -i eth1 -I 0.20 -c 350 -H pg@192.168.20.2
+Return code: 255
+Stdout: 
+Stderr: ssh: connect to host 192.168.20.2 port 22: Connection refused
+
+Data file written to ./rrul-2020-05-19T153807.235420.pie60_t20_tu_1_without_traffic.flent.gz.
+Initialised matplotlib v2.1.1 on numpy v1.18.1.
+(base) sai-girish@saigirish-Inspiron-5559:~$ sudo ip netns exec router tc qdisc add dev eth1 root pie target 20ms tupdate 1
+RTNETLINK answers: File exists
+(base) sai-girish@saigirish-Inspiron-5559:~$ sudo ip netns exec router tc qdisc add dev eth1 root pie target 20ms tupdate 15
+RTNETLINK answers: File exists
+(base) sai-girish@saigirish-Inspiron-5559:~$ sudo ip netns exec router tc qdisc add dev eth1 root pie target 20ms tupdate 15 dq_threshold 
+What is "dq_threshold"?
+Usage: ... pie [ limit PACKETS ][ target TIME us]
+              [ tupdate TIME us][ alpha ALPHA ][beta BETA ][bytemode | nobytemode][ecn | noecn ]
+(base) sai-girish@saigirish-Inspiron-5559:~$ sudo ip netns exec router tc qdisc add dev eth1 root pie target 20ms tupdate 15 dqthresh 
+What is "dqthresh"?
+Usage: ... pie [ limit PACKETS ][ target TIME us]
+              [ tupdate TIME us][ alpha ALPHA ][beta BETA ][bytemode | nobytemode][ecn | noecn ]
+(base) sai-girish@saigirish-Inspiron-5559:~$ sudo ip netns exec router tc qdisc add dev eth1 root pie target 20ms tupdate
+Command line is not complete. Try option "help"
+(base) sai-girish@saigirish-Inspiron-5559:~$ sudo ip netns exec router tc qdisc add dev eth1 root pie target 20ms tupdate 15 dq_thresh 
+What is "dq_thresh"?
+Usage: ... pie [ limit PACKETS ][ target TIME us]
+              [ tupdate TIME us][ alpha ALPHA ][beta BETA ][bytemode | nobytemode][ecn | noecn ]
+(base) sai-girish@saigirish-Inspiron-5559:~$ 

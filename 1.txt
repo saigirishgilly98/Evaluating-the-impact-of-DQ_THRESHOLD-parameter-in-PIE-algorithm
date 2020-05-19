@@ -1,0 +1,397 @@
+(base) sai-girish@saigirish-Inspiron-5559:~$ sudo ip netns add red
+[sudo] password for sai-girish: 
+(base) sai-girish@saigirish-Inspiron-5559:~$ sudo ip netns add green
+(base) sai-girish@saigirish-Inspiron-5559:~$ sudo ip link add eth0 type veth peer name eth1
+RTNETLINK answers: File exists
+(base) sai-girish@saigirish-Inspiron-5559:~$ sudo ip delete eth0
+Object "delete" is unknown, try "ip help".
+(base) sai-girish@saigirish-Inspiron-5559:~$ sudo ip link delete eth0
+(base) sai-girish@saigirish-Inspiron-5559:~$ sudo ip link add eth0 type veth peer name eth1
+(base) sai-girish@saigirish-Inspiron-5559:~$ sudo ip link add eth2 type veth peer name eth3
+(base) sai-girish@saigirish-Inspiron-5559:~$ 
+(base) sai-girish@saigirish-Inspiron-5559:~$ sudo ip link set eth0 netns red
+(base) sai-girish@saigirish-Inspiron-5559:~$ sudo ip link set eth2 netns green
+(base) sai-girish@saigirish-Inspiron-5559:~$ sudo ip netns exec red ip link set eth0 up
+(base) sai-girish@saigirish-Inspiron-5559:~$ sudo ip netns exec green ip link set eth2 up
+(base) sai-girish@saigirish-Inspiron-5559:~$ sudo ip netns exec red ip address add 172.16.10.2/24 dev eth0
+(base) sai-girish@saigirish-Inspiron-5559:~$ sudo ip netns exec green ip address add 192.168.50.1/24 dev eth2
+(base) sai-girish@saigirish-Inspiron-5559:~$ sudo ip netns add router
+(base) sai-girish@saigirish-Inspiron-5559:~$ sudo ip link set eth1 netns router
+(base) sai-girish@saigirish-Inspiron-5559:~$ sudo ip link set eth3 netns router
+(base) sai-girish@saigirish-Inspiron-5559:~$ sudo ip netns exec router ip link set eth1 up
+(base) sai-girish@saigirish-Inspiron-5559:~$ sudo ip netns exec router ip link set eth3 up
+(base) sai-girish@saigirish-Inspiron-5559:~$ sudo ip netns exec router ip address add 172.16.10.1/24 dev eth1
+(base) sai-girish@saigirish-Inspiron-5559:~$ sudo ip netns exec router ip address add 192.168.50.2/24 dev eth3
+(base) sai-girish@saigirish-Inspiron-5559:~$ sudo ip link add eth4 type veth peer name eth5
+(base) sai-girish@saigirish-Inspiron-5559:~$ sudo ip link set eth4 netns green
+(base) sai-girish@saigirish-Inspiron-5559:~$ sudo ip netns exec green ip link set eth4 up
+(base) sai-girish@saigirish-Inspiron-5559:~$ sudo ip netns exec green ip address add 192.168.20.1/24 dev eth4
+(base) sai-girish@saigirish-Inspiron-5559:~$ sudo ip link set eth5 netns router
+(base) sai-girish@saigirish-Inspiron-5559:~$ sudo ip netns exec router ip link set eth5 up
+(base) sai-girish@saigirish-Inspiron-5559:~$ sudo ip netns exec router ip address add 192.168.20.2/24 dev eth5
+(base) sai-girish@saigirish-Inspiron-5559:~$ sudo ip netns exec router ip link set lo up
+(base) sai-girish@saigirish-Inspiron-5559:~$ sudo ip netns exec red ip link set lo up
+(base) sai-girish@saigirish-Inspiron-5559:~$ sudo ip netns exec green ip link set lo up
+(base) sai-girish@saigirish-Inspiron-5559:~$ sudo ip netns exec red ping 192.168.50.1
+connect: Network is unreachable
+(base) sai-girish@saigirish-Inspiron-5559:~$ sudo ip netns exec red ping 172.16.10.2/24
+ping: 172.16.10.2/24: Name or service not known
+(base) sai-girish@saigirish-Inspiron-5559:~$ sudo ip netns exec red ping 172.16.10.2
+PING 172.16.10.2 (172.16.10.2) 56(84) bytes of data.
+64 bytes from 172.16.10.2: icmp_seq=1 ttl=64 time=0.034 ms
+64 bytes from 172.16.10.2: icmp_seq=2 ttl=64 time=0.054 ms
+64 bytes from 172.16.10.2: icmp_seq=3 ttl=64 time=0.041 ms
+64 bytes from 172.16.10.2: icmp_seq=4 ttl=64 time=0.031 ms
+^C
+--- 172.16.10.2 ping statistics ---
+4 packets transmitted, 4 received, 0% packet loss, time 3065ms
+rtt min/avg/max/mdev = 0.031/0.040/0.054/0.008 ms
+(base) sai-girish@saigirish-Inspiron-5559:~$ sudo ip netns exec red ip route add default via 192.168.50.1 dev eth0
+Error: Nexthop has invalid gateway.
+(base) sai-girish@saigirish-Inspiron-5559:~$ sudo ip netns exec red ip route add default via 172.16.10.1 dev eth0
+(base) sai-girish@saigirish-Inspiron-5559:~$ sudo ip netns exec red ping 172.16.10.2
+PING 172.16.10.2 (172.16.10.2) 56(84) bytes of data.
+64 bytes from 172.16.10.2: icmp_seq=1 ttl=64 time=0.035 ms
+64 bytes from 172.16.10.2: icmp_seq=2 ttl=64 time=0.060 ms
+64 bytes from 172.16.10.2: icmp_seq=3 ttl=64 time=0.078 ms
+64 bytes from 172.16.10.2: icmp_seq=4 ttl=64 time=0.043 ms
+^C
+--- 172.16.10.2 ping statistics ---
+4 packets transmitted, 4 received, 0% packet loss, time 3061ms
+rtt min/avg/max/mdev = 0.035/0.054/0.078/0.016 ms
+(base) sai-girish@saigirish-Inspiron-5559:~$ sudo ip netns exec green ip route add default via 192.168.50.2 dev eth2
+(base) sai-girish@saigirish-Inspiron-5559:~$ sudo ip netns exec router sysctl -w net.ipv4.ip_forward=1
+net.ipv4.ip_forward = 1
+(base) sai-girish@saigirish-Inspiron-5559:~$ sudo ip netns exec red ping 192.168.50.1
+PING 192.168.50.1 (192.168.50.1) 56(84) bytes of data.
+64 bytes from 192.168.50.1: icmp_seq=1 ttl=63 time=0.085 ms
+64 bytes from 192.168.50.1: icmp_seq=2 ttl=63 time=0.052 ms
+64 bytes from 192.168.50.1: icmp_seq=3 ttl=63 time=0.082 ms
+64 bytes from 192.168.50.1: icmp_seq=4 ttl=63 time=0.084 ms
+^C
+--- 192.168.50.1 ping statistics ---
+4 packets transmitted, 4 received, 0% packet loss, time 3070ms
+rtt min/avg/max/mdev = 0.052/0.075/0.085/0.017 ms
+(base) sai-girish@saigirish-Inspiron-5559:~$ sudo ip netns exec router
+No command specified
+(base) sai-girish@saigirish-Inspiron-5559:~$ sudo ip netns exec router tc qdisc add dev enx000000001220 root pie target 20ms tupdate
+Command line is not complete. Try option "help"
+(base) sai-girish@saigirish-Inspiron-5559:~$ sudo ip netns exec router tc qdisc add dev enx000000001220 root pie target 20ms tupdate value
+Illegal "tupdate"
+(base) sai-girish@saigirish-Inspiron-5559:~$ sudo ip netns exec router tc qdisc add dev enx000000001220 root pie target 20ms tupdate value=1
+Illegal "tupdate"
+(base) sai-girish@saigirish-Inspiron-5559:~$ sudo ip netns exec router tc qdisc add dev enx000000001220 root pie target 30ms tupdate value=1
+Illegal "tupdate"
+(base) sai-girish@saigirish-Inspiron-5559:~$ sudo tc qdisc add dev enx000000001220 root pie target 20ms tupdate value=1
+Illegal "tupdate"
+(base) sai-girish@saigirish-Inspiron-5559:~$ sudo ip netns exec green ping 192.168.20.2
+PING 192.168.20.2 (192.168.20.2) 56(84) bytes of data.
+64 bytes from 192.168.20.2: icmp_seq=1 ttl=64 time=0.066 ms
+64 bytes from 192.168.20.2: icmp_seq=2 ttl=64 time=0.077 ms
+64 bytes from 192.168.20.2: icmp_seq=3 ttl=64 time=0.070 ms
+^C
+--- 192.168.20.2 ping statistics ---
+3 packets transmitted, 3 received, 0% packet loss, time 2037ms
+rtt min/avg/max/mdev = 0.066/0.071/0.077/0.004 ms
+(base) sai-girish@saigirish-Inspiron-5559:~$ sudo ip netns exec green ip route add default via 192.168.20.2 dev eth5
+Cannot find device "eth5"
+(base) sai-girish@saigirish-Inspiron-5559:~$ ./run-flent rrul -p totals --test-parameter bandwidth=800M --test-
+bash: ./run-flent: No such file or directory
+(base) sai-girish@saigirish-Inspiron-5559:~$ parameter upload_stream=num_cpus --test-parameter
+parameter: command not found
+(base) sai-girish@saigirish-Inspiron-5559:~$ download_streams=num_cpus --test-parameter
+--test-parameter: command not found
+(base) sai-girish@saigirish-Inspiron-5559:~$ qdisc_stats_hosts=pg@192.168.20.2 --test-parameter
+--test-parameter: command not found
+(base) sai-girish@saigirish-Inspiron-5559:~$ qdisc_stats_interfaces=enx000000001220 -l 60 -H 172.16.10.2 -t
+-l: command not found
+(base) sai-girish@saigirish-Inspiron-5559:~$ pie60_t20_tu_1_without_traffic -o _pie60_t20_tu1_without_traffic.png^C
+(base) sai-girish@saigirish-Inspiron-5559:~$ sudo ip netns exec green ./run-flent rrul -p totals --test-parameter bandwidth=800M --test- parameter upload_stream=num_cpus --test-parameter download_streams=num_cpus --test-parameter qdisc_stats_hosts=pg@192.168.20.2 --test-parameter qdisc_stats_interfaces=enx000000001220 -l 60 -H 172.16.10.2 -t pie60_t20_tu_1_without_traffic -o _pie60_t20_tu1_without_traffic.png
+exec of "./run-flent" failed: No such file or directory
+(base) sai-girish@saigirish-Inspiron-5559:~$ flent rrul -p all_scaled -l 60 -H address-of-netserver -t text-to-be-included-in-plot -o filename.png
+Started Flent 1.2.2 using Python 3.6.9.
+ERROR: Found no hostnames on lookup of address-of-netserver
+(base) sai-girish@saigirish-Inspiron-5559:~$ flent rrul -p all_scaled -l 60 -H 172.16.10.1 -t text-to-be-included-in-plot -o filename.png
+Started Flent 1.2.2 using Python 3.6.9.
+Starting rrul test. Expected run time: 70 seconds.
+WARNING: Program exited non-zero.
+Runner class: PingRunner
+Command: /bin/ping -n -D -i 0.20 -w 70    172.16.10.1
+Return code: 1
+Stdout: PING 172.16.10.1 (172.16.10.1) 56(84) bytes of data.
+
+--- 172.16.10.1 ping statistics ---
+343 packets transmitted, 0 received, 100% packet loss, time 69826ms
+
+
+Stderr: 
+WARNING: Command produced no valid data.
+Runner class: PingRunner
+Command: /bin/ping -n -D -i 0.20 -w 70    172.16.10.1
+Return code: 1
+Stdout: PING 172.16.10.1 (172.16.10.1) 56(84) bytes of data.
+
+--- 172.16.10.1 ping statistics ---
+343 packets transmitted, 0 received, 100% packet loss, time 69826ms
+
+
+Stderr: 
+^C
+(base) sai-girish@saigirish-Inspiron-5559:~$ flent rrul -p totals --test-parameter bandwidth=800M --test- parameter upload_stream=num_cpus --test-parameter download_streams=num_cpus --test-parameter qdisc_stats_hosts=pg@192.168.20.2 --test-parameter qdisc_stats_interfaces=enx000000001220 -l 60 -H 172.16.10.2 -t pie60_t20_tu_1_without_traffic -o _pie60_t20_tu1_without_traffic.png
+usage: flent [-h] [-o OUTPUT] [-D DATA_DIR] [-i INPUT] [-f FORMAT] [-p PLOT]
+             [-t TITLE] [-n NOTE] [-r RCFILE] [-x]
+             [--remote-metadata HOSTNAME] [--gui] [--new-gui-instance]
+             [--gui-no-defer] [-b BATCH_NAME] [-B BATCH_FILE]
+             [--batch-override key=value] [--batch-dry-run] [--batch-verbose]
+             [--batch-no-shuffle] [--batch-repetitions REPETITIONS]
+             [--batch-title TITLE] [--batch-resume DIR] [-H HOST]
+             [--local-bind IP] [--remote-host idx=HOSTNAME] [-l LENGTH]
+             [-s STEP_SIZE] [-d DELAY] [-4] [-6]
+             [--socket-timeout SOCKET_TIMEOUT] [--test-parameter key=value]
+             [--swap-up-down] [--socket-stats] [--label-x LABEL_X]
+             [--label-y LABEL_Y] [-I] [-z] [--log-scale-y {log2,log10}]
+             [--norm-factor FACTOR] [--bounds-x BOUNDS_X]
+             [--bounds-y BOUNDS_Y] [-S] [--concatenate] [--absolute-time]
+             [--subplot-combine] [--skip-missing-series] [--no-print-n]
+             [--no-annotation] [--figure-note FIG_NOTE] [--no-title]
+             [--override-title TITLE] [--no-labels] [--no-markers]
+             [--no-legend] [--horizontal-legend] [--legend-title LEGEND_TITLE]
+             [--legend-placement {best,upper right,upper left,lower left,lower right,right,center left,center right,lower center,upper center,center}]
+             [--legend-columns LEGEND_COLUMNS] [--reverse-legend]
+             [--filter-legend] [--replace-legend src=dest]
+             [--filter-regexp REGEXP] [--override-label LABEL]
+             [--filter-series SERIES] [--split-group LABEL]
+             [--colours COLOURS] [--override-colour-mode MODE]
+             [--override-group-by GROUP] [--combine-save-dir DIRNAME]
+             [--figure-width FIG_WIDTH] [--figure-height FIG_HEIGHT]
+             [--figure-dpi FIG_DPI] [--fallback-layout] [--no-matplotlibrc]
+             [--no-hover-highlight] [--scale-data SCALE_DATA]
+             [--control-host HOST] [--control-local-bind IP]
+             [--netperf-control-port PORT] [--ditg-control-port PORT]
+             [--ditg-control-secret SECRET] [--http-getter-urllist FILENAME]
+             [--http-getter-dns-servers DNS_SERVERS]
+             [--http-getter-timeout MILLISECONDS]
+             [--http-getter-workers NUMBER] [-L LOG_FILE] [--list-tests]
+             [--list-plots] [-V] [-v] [-q] [--debug-error]
+             [host|test|input_file [host|test|input_file ...]]
+flent: error: argument --test-parameter: Invalid value 'parameter' (missing =)
+(base) sai-girish@saigirish-Inspiron-5559:~$ flent rrul -p totals --test-parameter bandwidth=800M --test-parameter upload_stream=num_cpus --test-parameter download_streams=num_cpus --test-parameter qdisc_stats_hosts=pg@192.168.20.2 --test-parameter qdisc_stats_interfaces=enx000000001220 -l 60 -H 172.16.10.2 -t pie60_t20_tu_1_without_traffic -o _pie60_t20_tu1_without_traffic.png
+Started Flent 1.2.2 using Python 3.6.9.
+Starting rrul test. Expected run time: 70 seconds.
+WARNING: Program exited non-zero.
+Runner class: PingRunner
+Command: /bin/ping -n -D -i 0.20 -w 70    172.16.10.2
+Return code: 1
+Stdout: PING 172.16.10.2 (172.16.10.2) 56(84) bytes of data.
+
+--- 172.16.10.2 ping statistics ---
+343 packets transmitted, 0 received, 100% packet loss, time 69823ms
+
+
+Stderr: 
+WARNING: Command produced no valid data.
+Runner class: PingRunner
+Command: /bin/ping -n -D -i 0.20 -w 70    172.16.10.2
+Return code: 1
+Stdout: PING 172.16.10.2 (172.16.10.2) 56(84) bytes of data.
+
+--- 172.16.10.2 ping statistics ---
+343 packets transmitted, 0 received, 100% packet loss, time 69823ms
+
+
+Stderr: 
+WARNING: Program exited non-zero.
+Runner class: NetperfDemoRunner
+Command: /usr/bin/netperf -P 0 -v 0 -D -0.20 -4 -Y EF,EF -H 172.16.10.2 -p 12865 -t UDP_RR -l 70 -F /dev/urandom    --   -H 172.16.10.2 -k THROUGHPUT,LOCAL_CONG_CONTROL,REMOTE_CONG_CONTROL,TRANSPORT_MSS,LOCAL_TRANSPORT_RETRANS,REMOTE_TRANSPORT_RETRANS,LOCAL_SOCKET_TOS,REMOTE_SOCKET_TOS,DIRECTION,ELAPSED_TIME,PROTOCOL,LOCAL_SEND_SIZE,LOCAL_RECV_SIZE,REMOTE_SEND_SIZE,REMOTE_RECV_SIZE  
+Return code: 255
+Stdout: establish control: are you sure there is a netserver listening on 172.16.10.2 at port 12865?
+establish_control could not establish the control connection from 0.0.0.0 port 0 address family AF_INET to 172.16.10.2 port 12865 address family AF_INET
+
+Stderr: 
+WARNING: Command produced no valid data.
+Runner class: NetperfDemoRunner
+Command: /usr/bin/netperf -P 0 -v 0 -D -0.20 -4 -Y EF,EF -H 172.16.10.2 -p 12865 -t UDP_RR -l 70 -F /dev/urandom    --   -H 172.16.10.2 -k THROUGHPUT,LOCAL_CONG_CONTROL,REMOTE_CONG_CONTROL,TRANSPORT_MSS,LOCAL_TRANSPORT_RETRANS,REMOTE_TRANSPORT_RETRANS,LOCAL_SOCKET_TOS,REMOTE_SOCKET_TOS,DIRECTION,ELAPSED_TIME,PROTOCOL,LOCAL_SEND_SIZE,LOCAL_RECV_SIZE,REMOTE_SEND_SIZE,REMOTE_RECV_SIZE  
+Return code: 255
+Stdout: establish control: are you sure there is a netserver listening on 172.16.10.2 at port 12865?
+establish_control could not establish the control connection from 0.0.0.0 port 0 address family AF_INET to 172.16.10.2 port 12865 address family AF_INET
+
+Stderr: 
+WARNING: Program exited non-zero.
+Runner class: NetperfDemoRunner
+Command: /usr/bin/netperf -P 0 -v 0 -D -0.20 -4 -Y CS1,CS1 -H 172.16.10.2 -p 12865 -t UDP_RR -l 70 -F /dev/urandom    --   -H 172.16.10.2 -k THROUGHPUT,LOCAL_CONG_CONTROL,REMOTE_CONG_CONTROL,TRANSPORT_MSS,LOCAL_TRANSPORT_RETRANS,REMOTE_TRANSPORT_RETRANS,LOCAL_SOCKET_TOS,REMOTE_SOCKET_TOS,DIRECTION,ELAPSED_TIME,PROTOCOL,LOCAL_SEND_SIZE,LOCAL_RECV_SIZE,REMOTE_SEND_SIZE,REMOTE_RECV_SIZE  
+Return code: 255
+Stdout: establish control: are you sure there is a netserver listening on 172.16.10.2 at port 12865?
+establish_control could not establish the control connection from 0.0.0.0 port 0 address family AF_INET to 172.16.10.2 port 12865 address family AF_INET
+
+Stderr: 
+WARNING: Command produced no valid data.
+Runner class: NetperfDemoRunner
+Command: /usr/bin/netperf -P 0 -v 0 -D -0.20 -4 -Y CS1,CS1 -H 172.16.10.2 -p 12865 -t UDP_RR -l 70 -F /dev/urandom    --   -H 172.16.10.2 -k THROUGHPUT,LOCAL_CONG_CONTROL,REMOTE_CONG_CONTROL,TRANSPORT_MSS,LOCAL_TRANSPORT_RETRANS,REMOTE_TRANSPORT_RETRANS,LOCAL_SOCKET_TOS,REMOTE_SOCKET_TOS,DIRECTION,ELAPSED_TIME,PROTOCOL,LOCAL_SEND_SIZE,LOCAL_RECV_SIZE,REMOTE_SEND_SIZE,REMOTE_RECV_SIZE  
+Return code: 255
+Stdout: establish control: are you sure there is a netserver listening on 172.16.10.2 at port 12865?
+establish_control could not establish the control connection from 0.0.0.0 port 0 address family AF_INET to 172.16.10.2 port 12865 address family AF_INET
+
+Stderr: 
+WARNING: Program exited non-zero.
+Runner class: NetperfDemoRunner
+Command: /usr/bin/netperf -P 0 -v 0 -D -0.20 -4  -H 172.16.10.2 -p 12865 -t UDP_RR -l 70 -F /dev/urandom    --   -H 172.16.10.2 -k THROUGHPUT,LOCAL_CONG_CONTROL,REMOTE_CONG_CONTROL,TRANSPORT_MSS,LOCAL_TRANSPORT_RETRANS,REMOTE_TRANSPORT_RETRANS,LOCAL_SOCKET_TOS,REMOTE_SOCKET_TOS,DIRECTION,ELAPSED_TIME,PROTOCOL,LOCAL_SEND_SIZE,LOCAL_RECV_SIZE,REMOTE_SEND_SIZE,REMOTE_RECV_SIZE  
+Return code: 255
+Stdout: establish control: are you sure there is a netserver listening on 172.16.10.2 at port 12865?
+establish_control could not establish the control connection from 0.0.0.0 port 0 address family AF_INET to 172.16.10.2 port 12865 address family AF_INET
+
+Stderr: 
+WARNING: Command produced no valid data.
+Runner class: NetperfDemoRunner
+Command: /usr/bin/netperf -P 0 -v 0 -D -0.20 -4  -H 172.16.10.2 -p 12865 -t UDP_RR -l 70 -F /dev/urandom    --   -H 172.16.10.2 -k THROUGHPUT,LOCAL_CONG_CONTROL,REMOTE_CONG_CONTROL,TRANSPORT_MSS,LOCAL_TRANSPORT_RETRANS,REMOTE_TRANSPORT_RETRANS,LOCAL_SOCKET_TOS,REMOTE_SOCKET_TOS,DIRECTION,ELAPSED_TIME,PROTOCOL,LOCAL_SEND_SIZE,LOCAL_RECV_SIZE,REMOTE_SEND_SIZE,REMOTE_RECV_SIZE  
+Return code: 255
+Stdout: establish control: are you sure there is a netserver listening on 172.16.10.2 at port 12865?
+establish_control could not establish the control connection from 0.0.0.0 port 0 address family AF_INET to 172.16.10.2 port 12865 address family AF_INET
+
+Stderr: 
+WARNING: Program exited non-zero.
+Runner class: TcRunner
+Command: /bin/bash /usr/share/flent/flent/scripts/tc_iterate.sh -i enx000000001220 -I 0.20 -c 350 -H pg@192.168.20.2
+Return code: 255
+Stdout: 
+Stderr: ssh: connect to host 192.168.20.2 port 22: Connection timed out
+
+WARNING: Command produced no valid data.
+Runner class: TcRunner
+Command: /bin/bash /usr/share/flent/flent/scripts/tc_iterate.sh -i enx000000001220 -I 0.20 -c 350 -H pg@192.168.20.2
+Return code: 255
+Stdout: 
+Stderr: ssh: connect to host 192.168.20.2 port 22: Connection timed out
+
+WARNING: Program exited non-zero.
+Runner class: NetperfDemoRunner
+Command: /usr/bin/netperf -P 0 -v 0 -D -0.20 -4 -Y CS0,CS0 -H 172.16.10.2 -p 12865 -t TCP_STREAM -l 60 -F /dev/urandom -f m   --   -H 172.16.10.2 -k THROUGHPUT,LOCAL_CONG_CONTROL,REMOTE_CONG_CONTROL,TRANSPORT_MSS,LOCAL_TRANSPORT_RETRANS,REMOTE_TRANSPORT_RETRANS,LOCAL_SOCKET_TOS,REMOTE_SOCKET_TOS,DIRECTION,ELAPSED_TIME,PROTOCOL,LOCAL_SEND_SIZE,LOCAL_RECV_SIZE,REMOTE_SEND_SIZE,REMOTE_RECV_SIZE  
+Return code: 255
+Stdout: establish control: are you sure there is a netserver listening on 172.16.10.2 at port 12865?
+establish_control could not establish the control connection from 0.0.0.0 port 0 address family AF_INET to 172.16.10.2 port 12865 address family AF_INET
+
+Stderr: 
+WARNING: Command produced no valid data.
+Runner class: NetperfDemoRunner
+Command: /usr/bin/netperf -P 0 -v 0 -D -0.20 -4 -Y CS0,CS0 -H 172.16.10.2 -p 12865 -t TCP_STREAM -l 60 -F /dev/urandom -f m   --   -H 172.16.10.2 -k THROUGHPUT,LOCAL_CONG_CONTROL,REMOTE_CONG_CONTROL,TRANSPORT_MSS,LOCAL_TRANSPORT_RETRANS,REMOTE_TRANSPORT_RETRANS,LOCAL_SOCKET_TOS,REMOTE_SOCKET_TOS,DIRECTION,ELAPSED_TIME,PROTOCOL,LOCAL_SEND_SIZE,LOCAL_RECV_SIZE,REMOTE_SEND_SIZE,REMOTE_RECV_SIZE  
+Return code: 255
+Stdout: establish control: are you sure there is a netserver listening on 172.16.10.2 at port 12865?
+establish_control could not establish the control connection from 0.0.0.0 port 0 address family AF_INET to 172.16.10.2 port 12865 address family AF_INET
+
+Stderr: 
+WARNING: Program exited non-zero.
+Runner class: NetperfDemoRunner
+Command: /usr/bin/netperf -P 0 -v 0 -D -0.20 -4 -Y CS1,CS1 -H 172.16.10.2 -p 12865 -t TCP_STREAM -l 60 -F /dev/urandom -f m   --   -H 172.16.10.2 -k THROUGHPUT,LOCAL_CONG_CONTROL,REMOTE_CONG_CONTROL,TRANSPORT_MSS,LOCAL_TRANSPORT_RETRANS,REMOTE_TRANSPORT_RETRANS,LOCAL_SOCKET_TOS,REMOTE_SOCKET_TOS,DIRECTION,ELAPSED_TIME,PROTOCOL,LOCAL_SEND_SIZE,LOCAL_RECV_SIZE,REMOTE_SEND_SIZE,REMOTE_RECV_SIZE  
+Return code: 255
+Stdout: establish control: are you sure there is a netserver listening on 172.16.10.2 at port 12865?
+establish_control could not establish the control connection from 0.0.0.0 port 0 address family AF_INET to 172.16.10.2 port 12865 address family AF_INET
+
+Stderr: 
+WARNING: Command produced no valid data.
+Runner class: NetperfDemoRunner
+Command: /usr/bin/netperf -P 0 -v 0 -D -0.20 -4 -Y CS1,CS1 -H 172.16.10.2 -p 12865 -t TCP_STREAM -l 60 -F /dev/urandom -f m   --   -H 172.16.10.2 -k THROUGHPUT,LOCAL_CONG_CONTROL,REMOTE_CONG_CONTROL,TRANSPORT_MSS,LOCAL_TRANSPORT_RETRANS,REMOTE_TRANSPORT_RETRANS,LOCAL_SOCKET_TOS,REMOTE_SOCKET_TOS,DIRECTION,ELAPSED_TIME,PROTOCOL,LOCAL_SEND_SIZE,LOCAL_RECV_SIZE,REMOTE_SEND_SIZE,REMOTE_RECV_SIZE  
+Return code: 255
+Stdout: establish control: are you sure there is a netserver listening on 172.16.10.2 at port 12865?
+establish_control could not establish the control connection from 0.0.0.0 port 0 address family AF_INET to 172.16.10.2 port 12865 address family AF_INET
+
+Stderr: 
+WARNING: Program exited non-zero.
+Runner class: NetperfDemoRunner
+Command: /usr/bin/netperf -P 0 -v 0 -D -0.20 -4 -Y CS0,CS0 -H 172.16.10.2 -p 12865 -t TCP_MAERTS -l 60 -F /dev/urandom -f m   --   -H 172.16.10.2 -k THROUGHPUT,LOCAL_CONG_CONTROL,REMOTE_CONG_CONTROL,TRANSPORT_MSS,LOCAL_TRANSPORT_RETRANS,REMOTE_TRANSPORT_RETRANS,LOCAL_SOCKET_TOS,REMOTE_SOCKET_TOS,DIRECTION,ELAPSED_TIME,PROTOCOL,LOCAL_SEND_SIZE,LOCAL_RECV_SIZE,REMOTE_SEND_SIZE,REMOTE_RECV_SIZE  
+Return code: 255
+Stdout: establish control: are you sure there is a netserver listening on 172.16.10.2 at port 12865?
+establish_control could not establish the control connection from 0.0.0.0 port 0 address family AF_INET to 172.16.10.2 port 12865 address family AF_INET
+
+Stderr: 
+WARNING: Command produced no valid data.
+Runner class: NetperfDemoRunner
+Command: /usr/bin/netperf -P 0 -v 0 -D -0.20 -4 -Y CS0,CS0 -H 172.16.10.2 -p 12865 -t TCP_MAERTS -l 60 -F /dev/urandom -f m   --   -H 172.16.10.2 -k THROUGHPUT,LOCAL_CONG_CONTROL,REMOTE_CONG_CONTROL,TRANSPORT_MSS,LOCAL_TRANSPORT_RETRANS,REMOTE_TRANSPORT_RETRANS,LOCAL_SOCKET_TOS,REMOTE_SOCKET_TOS,DIRECTION,ELAPSED_TIME,PROTOCOL,LOCAL_SEND_SIZE,LOCAL_RECV_SIZE,REMOTE_SEND_SIZE,REMOTE_RECV_SIZE  
+Return code: 255
+Stdout: establish control: are you sure there is a netserver listening on 172.16.10.2 at port 12865?
+establish_control could not establish the control connection from 0.0.0.0 port 0 address family AF_INET to 172.16.10.2 port 12865 address family AF_INET
+
+Stderr: 
+WARNING: Program exited non-zero.
+Runner class: NetperfDemoRunner
+Command: /usr/bin/netperf -P 0 -v 0 -D -0.20 -4 -Y CS5,CS5 -H 172.16.10.2 -p 12865 -t TCP_STREAM -l 60 -F /dev/urandom -f m   --   -H 172.16.10.2 -k THROUGHPUT,LOCAL_CONG_CONTROL,REMOTE_CONG_CONTROL,TRANSPORT_MSS,LOCAL_TRANSPORT_RETRANS,REMOTE_TRANSPORT_RETRANS,LOCAL_SOCKET_TOS,REMOTE_SOCKET_TOS,DIRECTION,ELAPSED_TIME,PROTOCOL,LOCAL_SEND_SIZE,LOCAL_RECV_SIZE,REMOTE_SEND_SIZE,REMOTE_RECV_SIZE  
+Return code: 255
+Stdout: establish control: are you sure there is a netserver listening on 172.16.10.2 at port 12865?
+establish_control could not establish the control connection from 0.0.0.0 port 0 address family AF_INET to 172.16.10.2 port 12865 address family AF_INET
+
+Stderr: 
+WARNING: Command produced no valid data.
+Runner class: NetperfDemoRunner
+Command: /usr/bin/netperf -P 0 -v 0 -D -0.20 -4 -Y CS5,CS5 -H 172.16.10.2 -p 12865 -t TCP_STREAM -l 60 -F /dev/urandom -f m   --   -H 172.16.10.2 -k THROUGHPUT,LOCAL_CONG_CONTROL,REMOTE_CONG_CONTROL,TRANSPORT_MSS,LOCAL_TRANSPORT_RETRANS,REMOTE_TRANSPORT_RETRANS,LOCAL_SOCKET_TOS,REMOTE_SOCKET_TOS,DIRECTION,ELAPSED_TIME,PROTOCOL,LOCAL_SEND_SIZE,LOCAL_RECV_SIZE,REMOTE_SEND_SIZE,REMOTE_RECV_SIZE  
+Return code: 255
+Stdout: establish control: are you sure there is a netserver listening on 172.16.10.2 at port 12865?
+establish_control could not establish the control connection from 0.0.0.0 port 0 address family AF_INET to 172.16.10.2 port 12865 address family AF_INET
+
+Stderr: 
+WARNING: Program exited non-zero.
+Runner class: NetperfDemoRunner
+Command: /usr/bin/netperf -P 0 -v 0 -D -0.20 -4 -Y EF,EF -H 172.16.10.2 -p 12865 -t TCP_STREAM -l 60 -F /dev/urandom -f m   --   -H 172.16.10.2 -k THROUGHPUT,LOCAL_CONG_CONTROL,REMOTE_CONG_CONTROL,TRANSPORT_MSS,LOCAL_TRANSPORT_RETRANS,REMOTE_TRANSPORT_RETRANS,LOCAL_SOCKET_TOS,REMOTE_SOCKET_TOS,DIRECTION,ELAPSED_TIME,PROTOCOL,LOCAL_SEND_SIZE,LOCAL_RECV_SIZE,REMOTE_SEND_SIZE,REMOTE_RECV_SIZE  
+Return code: 255
+Stdout: establish control: are you sure there is a netserver listening on 172.16.10.2 at port 12865?
+establish_control could not establish the control connection from 0.0.0.0 port 0 address family AF_INET to 172.16.10.2 port 12865 address family AF_INET
+
+Stderr: 
+WARNING: Command produced no valid data.
+Runner class: NetperfDemoRunner
+Command: /usr/bin/netperf -P 0 -v 0 -D -0.20 -4 -Y EF,EF -H 172.16.10.2 -p 12865 -t TCP_STREAM -l 60 -F /dev/urandom -f m   --   -H 172.16.10.2 -k THROUGHPUT,LOCAL_CONG_CONTROL,REMOTE_CONG_CONTROL,TRANSPORT_MSS,LOCAL_TRANSPORT_RETRANS,REMOTE_TRANSPORT_RETRANS,LOCAL_SOCKET_TOS,REMOTE_SOCKET_TOS,DIRECTION,ELAPSED_TIME,PROTOCOL,LOCAL_SEND_SIZE,LOCAL_RECV_SIZE,REMOTE_SEND_SIZE,REMOTE_RECV_SIZE  
+Return code: 255
+Stdout: establish control: are you sure there is a netserver listening on 172.16.10.2 at port 12865?
+establish_control could not establish the control connection from 0.0.0.0 port 0 address family AF_INET to 172.16.10.2 port 12865 address family AF_INET
+
+Stderr: 
+WARNING: Program exited non-zero.
+Runner class: NetperfDemoRunner
+Command: /usr/bin/netperf -P 0 -v 0 -D -0.20 -4 -Y CS1,CS1 -H 172.16.10.2 -p 12865 -t TCP_MAERTS -l 60 -F /dev/urandom -f m   --   -H 172.16.10.2 -k THROUGHPUT,LOCAL_CONG_CONTROL,REMOTE_CONG_CONTROL,TRANSPORT_MSS,LOCAL_TRANSPORT_RETRANS,REMOTE_TRANSPORT_RETRANS,LOCAL_SOCKET_TOS,REMOTE_SOCKET_TOS,DIRECTION,ELAPSED_TIME,PROTOCOL,LOCAL_SEND_SIZE,LOCAL_RECV_SIZE,REMOTE_SEND_SIZE,REMOTE_RECV_SIZE  
+Return code: 255
+Stdout: establish control: are you sure there is a netserver listening on 172.16.10.2 at port 12865?
+establish_control could not establish the control connection from 0.0.0.0 port 0 address family AF_INET to 172.16.10.2 port 12865 address family AF_INET
+
+Stderr: 
+WARNING: Command produced no valid data.
+Runner class: NetperfDemoRunner
+Command: /usr/bin/netperf -P 0 -v 0 -D -0.20 -4 -Y CS1,CS1 -H 172.16.10.2 -p 12865 -t TCP_MAERTS -l 60 -F /dev/urandom -f m   --   -H 172.16.10.2 -k THROUGHPUT,LOCAL_CONG_CONTROL,REMOTE_CONG_CONTROL,TRANSPORT_MSS,LOCAL_TRANSPORT_RETRANS,REMOTE_TRANSPORT_RETRANS,LOCAL_SOCKET_TOS,REMOTE_SOCKET_TOS,DIRECTION,ELAPSED_TIME,PROTOCOL,LOCAL_SEND_SIZE,LOCAL_RECV_SIZE,REMOTE_SEND_SIZE,REMOTE_RECV_SIZE  
+Return code: 255
+Stdout: establish control: are you sure there is a netserver listening on 172.16.10.2 at port 12865?
+establish_control could not establish the control connection from 0.0.0.0 port 0 address family AF_INET to 172.16.10.2 port 12865 address family AF_INET
+
+Stderr: 
+WARNING: Program exited non-zero.
+Runner class: NetperfDemoRunner
+Command: /usr/bin/netperf -P 0 -v 0 -D -0.20 -4 -Y CS5,CS5 -H 172.16.10.2 -p 12865 -t TCP_MAERTS -l 60 -F /dev/urandom -f m   --   -H 172.16.10.2 -k THROUGHPUT,LOCAL_CONG_CONTROL,REMOTE_CONG_CONTROL,TRANSPORT_MSS,LOCAL_TRANSPORT_RETRANS,REMOTE_TRANSPORT_RETRANS,LOCAL_SOCKET_TOS,REMOTE_SOCKET_TOS,DIRECTION,ELAPSED_TIME,PROTOCOL,LOCAL_SEND_SIZE,LOCAL_RECV_SIZE,REMOTE_SEND_SIZE,REMOTE_RECV_SIZE  
+Return code: 255
+Stdout: establish control: are you sure there is a netserver listening on 172.16.10.2 at port 12865?
+establish_control could not establish the control connection from 0.0.0.0 port 0 address family AF_INET to 172.16.10.2 port 12865 address family AF_INET
+
+Stderr: 
+WARNING: Command produced no valid data.
+Runner class: NetperfDemoRunner
+Command: /usr/bin/netperf -P 0 -v 0 -D -0.20 -4 -Y CS5,CS5 -H 172.16.10.2 -p 12865 -t TCP_MAERTS -l 60 -F /dev/urandom -f m   --   -H 172.16.10.2 -k THROUGHPUT,LOCAL_CONG_CONTROL,REMOTE_CONG_CONTROL,TRANSPORT_MSS,LOCAL_TRANSPORT_RETRANS,REMOTE_TRANSPORT_RETRANS,LOCAL_SOCKET_TOS,REMOTE_SOCKET_TOS,DIRECTION,ELAPSED_TIME,PROTOCOL,LOCAL_SEND_SIZE,LOCAL_RECV_SIZE,REMOTE_SEND_SIZE,REMOTE_RECV_SIZE  
+Return code: 255
+Stdout: establish control: are you sure there is a netserver listening on 172.16.10.2 at port 12865?
+establish_control could not establish the control connection from 0.0.0.0 port 0 address family AF_INET to 172.16.10.2 port 12865 address family AF_INET
+
+Stderr: 
+WARNING: Program exited non-zero.
+Runner class: NetperfDemoRunner
+Command: /usr/bin/netperf -P 0 -v 0 -D -0.20 -4 -Y EF,EF -H 172.16.10.2 -p 12865 -t TCP_MAERTS -l 60 -F /dev/urandom -f m   --   -H 172.16.10.2 -k THROUGHPUT,LOCAL_CONG_CONTROL,REMOTE_CONG_CONTROL,TRANSPORT_MSS,LOCAL_TRANSPORT_RETRANS,REMOTE_TRANSPORT_RETRANS,LOCAL_SOCKET_TOS,REMOTE_SOCKET_TOS,DIRECTION,ELAPSED_TIME,PROTOCOL,LOCAL_SEND_SIZE,LOCAL_RECV_SIZE,REMOTE_SEND_SIZE,REMOTE_RECV_SIZE  
+Return code: 255
+Stdout: establish control: are you sure there is a netserver listening on 172.16.10.2 at port 12865?
+establish_control could not establish the control connection from 0.0.0.0 port 0 address family AF_INET to 172.16.10.2 port 12865 address family AF_INET
+
+Stderr: 
+WARNING: Command produced no valid data.
+Runner class: NetperfDemoRunner
+Command: /usr/bin/netperf -P 0 -v 0 -D -0.20 -4 -Y EF,EF -H 172.16.10.2 -p 12865 -t TCP_MAERTS -l 60 -F /dev/urandom -f m   --   -H 172.16.10.2 -k THROUGHPUT,LOCAL_CONG_CONTROL,REMOTE_CONG_CONTROL,TRANSPORT_MSS,LOCAL_TRANSPORT_RETRANS,REMOTE_TRANSPORT_RETRANS,LOCAL_SOCKET_TOS,REMOTE_SOCKET_TOS,DIRECTION,ELAPSED_TIME,PROTOCOL,LOCAL_SEND_SIZE,LOCAL_RECV_SIZE,REMOTE_SEND_SIZE,REMOTE_RECV_SIZE  
+Return code: 255
+Stdout: establish control: are you sure there is a netserver listening on 172.16.10.2 at port 12865?
+establish_control could not establish the control connection from 0.0.0.0 port 0 address family AF_INET to 172.16.10.2 port 12865 address family AF_INET
+
+Stderr: 
+ERROR: No data to aggregate. Run with -L and check log file to investigate.
+(base) sai-girish@saigirish-Inspiron-5559:~$ sudo ip netns exec red netserver &
+[1] 10054
+(base) sai-girish@saigirish-Inspiron-5559:~$ Starting netserver with host 'IN(6)ADDR_ANY' port '12865' and family AF_UNSPEC
+(base) sai-girish@saigirish-Inspiron-5559:~$ 
