@@ -10,3 +10,12 @@ Week 2:ii) Completed the task of finding the values of DQ_THRESH in various plat
         RFC: 16384 Bytes
           https://tools.ietf.org/html/rfc8033
 Week 4:Uploaded network topology to github
+Week 5:Read through the Documentation of Flent. Tried to modify some parameters such as tupdate and target using flent and generated its graph.
+Faced issues finding the way to alter dq_threshold parameter value
+   
+Week 7: Downloaded iproute2 package to work on q_pie.c file to make dequeue threshold as a parameter.
+Tried to modify the value of DQ_THRESH in ns-3.29 present in pie-queue-disc.cc file in ns-3.29/src/traffic-control/model
+Added the latest linux kernel version (5.7.1) to proceed with altering the value of DQ_THRESH
+Made appropriate changes to /include/net/pie.h and /net/sched/sch_pie.c files to include DQ_THRESH as a required parameter
+Generated the kernel object files for PIE
+Faced issues in building the new kernel model and installing it.
