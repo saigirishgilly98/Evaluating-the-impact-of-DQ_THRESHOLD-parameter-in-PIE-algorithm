@@ -1,5 +1,4 @@
-Week 1:
-   i) Read the material provided in Assignment list
+i) Read the material provided in Assignment list
    ii) Completed the task of finding the values of DQ_THRESH in various platforms:
         Linux: 16384 Bytes
           https://github.com/torvalds/linux/blob/master/net/sched/sch_pie.c 
@@ -10,3 +9,17 @@ Week 1:
           https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=6602305  
         RFC: 16384 Bytes
           https://tools.ietf.org/html/rfc8033
+          
+   iii) Created a basic topology for the project using network namespaces
+   iv) Read through the Documentation of Flent
+   v) Tried to modify some parameters such as tupdate and target using flent and generated its graph
+   vi) Faced issues finding the way to alter dq_threshold parameter value
+   
+   
+ vii) Downloaded iproute2 package to work on q_pie.c file
+ viii) Tried to modify the value of DQ_THRESH in ns-3.29 present in pie-queue-disc.cc file in ns-3.29/src/traffic-control/model
+ ix) Added the latest linux kernel version (5.7.1) to proceed with altering the value of DQ_THRESH
+ x) Made appropriate changes to /include/net/pie.h and /net/sched/sch_pie.c files to include DQ_THRESH as a required parameter
+ xi) Generated the kernel object files for PIE
+ xii) Faced issues in building the new kernel model and installing it
+          
