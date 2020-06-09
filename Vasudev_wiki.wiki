@@ -1,14 +1,22 @@
 i) Read the material provided in Assignment list
-   ii) Completed the task of finding the values of DQ_THRESH in various platforms:
-        Linux: 16384 Bytes
-          https://github.com/torvalds/linux/blob/master/net/sched/sch_pie.c 
-          https://github.com/torvalds/linux/blob/master/include/net/pie.h 
-        Ns3: 10000 Bytes
-          https://www.nsnam.org/docs/models/html/pie.html  
-        Paper: 10000 Bytes
-          https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=6602305  
-        RFC: 16384 Bytes
-          https://tools.ietf.org/html/rfc8033
+ii) Completed the task of finding the values of DQ_THRESH in various platforms:
+Linux: 16384 Bytes
+
+		https://github.com/torvalds/linux/blob/master/net/sched/sch_pie.c
+	
+		https://github.com/torvalds/linux/blob/master/include/net/pie.h
+		
+Ns3: 10000 Bytes
+
+	https://www.nsnam.org/docs/models/html/pie.html
+	
+Paper: 10000 Bytes
+
+	https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=6602305
+	
+RFC: 16384 Bytes
+
+	https://tools.ietf.org/html/rfc8033
           
    iii) Created a basic topology for the project using network namespaces
    iv) Read through the Documentation of Flent
