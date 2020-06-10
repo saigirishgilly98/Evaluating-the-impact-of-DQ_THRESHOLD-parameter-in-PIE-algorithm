@@ -14,5 +14,12 @@ Week 1
         - Revised RFC 8033.
         - Read about flent.
         - Built a network topology consisting of server, client and router.
-        - Ran PIE in router and collected data at client side using flent.
+        - Ran ping and collected data at client side using flent.
         - Faced issues finding the way to alter dq_threshold parameter value, was only able to alter tupdate and target parameters.
+        - Downloaded iproute2 package to work on q_pie.c file.
+        - Tried to modify the value of DQ_THRESH in ns-3.29 present in pie-queue-disc.cc file in ns-3.29/src/traffic-control/model.
+        - Added the latest linux kernel version (5.7.1) to proceed with altering the value of DQ_THRESH
+        - Made appropriate changes to /include/net/pie.h and /net/sched/sch_pie.c files to include DQ_THRESH as a required parameter.
+        - Generated the kernel object files for PIE
+        - Faced issues in building the new kernel model and installing it
+
