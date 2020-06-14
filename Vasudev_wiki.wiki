@@ -1,33 +1,57 @@
-i) Read the material provided in Assignment list
-ii) Completed the task of finding the values of DQ_THRESH in various platforms:
-Linux: 16384 Bytes
+1) Read the material provided in Assignment list
 
-		https://github.com/torvalds/linux/blob/master/net/sched/sch_pie.c
-	
-		https://github.com/torvalds/linux/blob/master/include/net/pie.h
+2) Completed the task of finding the values of DQ_THRESH in various platforms:
+                Linux: 16384 Bytes
+                https://github.com/torvalds/linux/blob/master/net/sched/sch_pie.c
+                https://github.com/torvalds/linux/blob/master/include/net/pie.h
+
+                Ns3: 10000 Bytes
+                https://www.nsnam.org/docs/models/html/pie.html
 		
-Ns3: 10000 Bytes
-
-	https://www.nsnam.org/docs/models/html/pie.html
+		Paper: 10000 Bytes
+	    	https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=6602305
 	
-Paper: 10000 Bytes
+       	 	RFC: 16384 Bytes
+	    	https://tools.ietf.org/html/rfc8033
 
-	https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=6602305
-	
-RFC: 16384 Bytes
+3) Created a basic topology for the project using network namespaces
 
-	https://tools.ietf.org/html/rfc8033
-          
-   iii) Created a basic topology for the project using network namespaces
-   iv) Read through the Documentation of Flent
-   v) Tried to modify some parameters such as tupdate and target using flent and generated its graph
-   vi) Faced issues finding the way to alter dq_threshold parameter value
+4) Read through the Documentation of Flent
+
+5) Tried to modify some parameters such as tupdate and target using flent and generated its graph
+
+6) Faced issues finding the way to alter dq_threshold parameter value
    
-   
- vii) Downloaded iproute2 package to work on q_pie.c file
- viii) Tried to modify the value of DQ_THRESH in ns-3.29 present in pie-queue-disc.cc file in ns-3.29/src/traffic-control/model
- ix) Added the latest linux kernel version (5.7.1) to proceed with altering the value of DQ_THRESH
- x) Made appropriate changes to /include/net/pie.h and /net/sched/sch_pie.c files to include DQ_THRESH as a required parameter
- xi) Generated the kernel object files for PIE
- xii) Faced issues in building the new kernel model and installing it
-          
+7) Downloaded iproute2 package to work on q_pie.c file
+
+8) Tried to modify the value of DQ_THRESH in ns-3.29 present in pie-queue-disc.cc file in ns-3.29/src/traffic-control/model
+
+9) Added the latest linux kernel version (5.7.1) to proceed with altering the value of DQ_THRESH
+
+10) Made appropriate changes to /include/net/pie.h and /net/sched/sch_pie.c files to include DQ_THRESH as a required parameter
+
+11) Generated the kernel object files for PIE
+
+             https://www.cyberciti.biz/tips/compiling-linux-kernel-26.html
+             https://www.youtube.com/watch?v=CWihl19mJig
+             
+12) Faced issues in building the new kernel model and installing it
+
+13) Resolved the issue by using a different system with an older Linux kernel
+
+14) Made appropriate changes in the q_pie.c file in iproute2 package
+
+15) Compiled and Installed the modified iproute2 package 
+              
+             https://packaging.ubuntu.com/html/packaging-new-software.html
+             
+16) Ran the following commands in the respective namespaces using the topology designed in Step 3
+
+            Router(router) : sudo ip netns exec router sudo tc qdisc add dev eth1 root pie dq_thresh test_value
+            test_value is the required parameter
+
+            Server(red) : sudo ip netns exec red netserver &
+
+            Client(green) : sudo ip netns exec green flent rrul -p totals --test-parameter bandwidth=800M --test-parameter upload_stream=num_cpus --test-parameter download_streams=num_cpus --test-parameter qdisc_stats_hosts=pg@192.168.20.2 --test-parameter qdisc_stats_interfaces=eth1 -l 60 -H 172.16.10.2 -t dq_thresh=test_value -o dq_thresh=test_value.png
+            test_value is the required parameter
+17) Got the corresponding graphs for each test_value provided
