@@ -25,6 +25,9 @@ sudo ip netns exec router ip address add 192.168.20.2/24 dev eth5
 sudo ip netns exec router ip link set lo up
 sudo ip netns exec red ip link set lo up
 sudo ip netns exec green ip link set lo up
+sudo ip netns exec red ip route add default via 172.16.10.1 dev eth0
+sudo ip netns exec green ip route add default via 192.168.50.2 dev eth2
+sudo ip netns exec router sysctl -w net.ipv4.ip_forward=1
 sudo ip netns exec red ping 192.168.50.1
 sudo ip netns exec red ping 172.16.10.2
 sudo ip netns exec green ping 192.168.20.2
