@@ -13,8 +13,11 @@ Recommended Reading:
 ● PIE: A Lightweight Control Scheme to Address the Bufferbloat Problem 
 ● About Flent (Path: https://flent.org/)
 
+Result:
+The graphs that we received in Flent for different values of dq_thresh are available in the Graphs folder. We can find that value around 12000bytes gives better bandwidth and lower latency compared to the default value of 16384bytes. 
+
 Team Members:
 
 Vasudev B M (171CO150)
-Girish     (161CO244)
+S Sai Girish (16CO244)
 Anil Kumar (171CO219)
