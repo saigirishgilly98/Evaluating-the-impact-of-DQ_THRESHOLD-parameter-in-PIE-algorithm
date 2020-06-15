@@ -20,19 +20,16 @@
         - Added the latest linux kernel version (5.7.1) to proceed with altering the value of DQ_THRESH
         - Made appropriate changes to /include/net/pie.h and /net/sched/sch_pie.c files to include DQ_THRESH as a required parameter.
         - Generated the kernel object files for PIE
-        - Faced issues in building the new kernel model and installing it
-      
+        - Faced issues in building the new kernel model and installing it    
 
         - Resolved the issue by using a different system with an older Linux kernel
 
         - Made appropriate changes in the q_pie.c file in iproute2 package
 
         - Compiled and Installed the modified iproute2 package 
-              
-             https://packaging.ubuntu.com/html/packaging-new-software.html
+              https://packaging.ubuntu.com/html/packaging-new-software.html
              
         - Ran the following commands in the respective namespaces using the topology designed in Step 3
-
             Router(router) : sudo ip netns exec router sudo tc qdisc add dev eth1 root pie dq_thresh test_value
             test_value is the required parameter
 
@@ -40,5 +37,6 @@
 
             Client(green) : sudo ip netns exec green flent rrul -p totals --test-parameter bandwidth=800M --test-parameter upload_stream=num_cpus --test-parameter download_streams=num_cpus --test-parameter qdisc_stats_hosts=pg@192.168.20.2 --test-parameter qdisc_stats_interfaces=eth1 -l 60 -H 172.16.10.2 -t dq_thresh=test_value -o dq_thresh=test_value.png
             test_value is the required parameter
+            
          - Got the corresponding graphs for each test_value provided
 
